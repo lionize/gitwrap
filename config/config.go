@@ -10,16 +10,22 @@ import (
 
 // Profile struct represents user profile information.
 type Profile struct {
-	Name  string
-	Email string
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
-type configJSON struct {
-	profiles []Profile
+// JSON contains config.json's structure
+type JSON struct {
+	Profiles []Profile `json:"profiles"`
 }
 
-var config = configJSON{
-	profiles: []Profile{},
+func (c *JSON) addProfile(profile Profile) {
+	profiles := append(c.Profiles, profile)
+	c.Profiles = profiles
+}
+
+var config = JSON{
+	Profiles: []Profile{},
 }
 
 func init() {
@@ -44,14 +50,17 @@ func init() {
 		fmt.Println("ERROR: ", err.Error())
 		os.Exit(1)
 	}
-
-	fmt.Println(config)
 }
 
-// Profiles returns the user profiles stored
-// in the user's config file
+// CreateProfile adds the specified profile to the configuration and saves it
+func CreateProfile(profile Profile) {
+	config.addProfile(profile)
+	saveConfig()
+}
+
+// Profiles returns the user profiles stored in the user's config file
 func Profiles() []Profile {
-	return config.profiles
+	return config.Profiles
 }
 
 func createConfig() {
