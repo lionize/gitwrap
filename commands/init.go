@@ -11,7 +11,7 @@ import (
 // Init initializes a git repository using interactive user input
 var Init = Command{
 	Name:        "init",
-	Description: "description",
+	Description: "inits a git repo using user input",
 	Run: func(args []string) {
 		profiles, keys := initProfiles()
 		profile := userProfileSelect(profiles, keys)
