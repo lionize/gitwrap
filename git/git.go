@@ -28,9 +28,11 @@ func gitConfig(key string, value string) {
 func runGitCmd(args []string) {
 	input := append([]string{"-q", "/dev/null", "git"}, args...)
 	cmd := exec.Command("script", input...)
-	output, err := cmd.CombinedOutput()
-	printError(err)
-	printOutput(output)
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	cmd.Start()
+	cmd.Wait()
 }
 
 func printError(err error) {
