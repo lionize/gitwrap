@@ -4,13 +4,30 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
+
+	"github.com/lionize/gitwrap/config"
 )
+
+// RunGitInit initializes the repo and sets the user config to match the
+// provided profile
+func RunGitInit(profile config.Profile) {
+	runGitCmd([]string{"init"})
+	gitConfig("user.name", profile.Name)
+	gitConfig("user.email", profile.Email)
+}
 
 // RunGitPassthrough passes process args through to git command
 func RunGitPassthrough() {
-	args := append([]string{"-q", "/dev/null", "git"}, strings.Join(os.Args[1:], " "))
-	cmd := exec.Command("script", args...)
+	runGitCmd(os.Args[1:])
+}
+
+func gitConfig(key string, value string) {
+	runGitCmd([]string{"config", key, value})
+}
+
+func runGitCmd(args []string) {
+	input := append([]string{"-q", "/dev/null", "git"}, args...)
+	cmd := exec.Command("script", input...)
 	output, err := cmd.CombinedOutput()
 	printError(err)
 	printOutput(output)
